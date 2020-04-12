@@ -1,4 +1,4 @@
-package com.kafka.home;
+package com.kafka.home.Producer;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -37,7 +37,7 @@ public class ProducerDemoKeys {
                                 "Topic" + recordMetadata.topic() + "\n" +
                                 "Partition" + recordMetadata.partition() + "\n" +
                                 "Offset" + recordMetadata.offset() + "\n" +
-                                "Timestamp" + recordMetadata.timestamp());
+                                "TimesNtamp" + recordMetadata.timestamp());
                     } else {
                         logger.error("Error occurred while producing data");
                     }
