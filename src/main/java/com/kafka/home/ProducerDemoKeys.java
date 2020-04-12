@@ -6,9 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 public class ProducerDemoKeys {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         final Logger logger = LoggerFactory.getLogger(ProducerDemoKeys.class);
         //create producer properties
         String bootstrapServer = "127.0.0.1:9092";
@@ -21,8 +22,12 @@ public class ProducerDemoKeys {
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
 
         for(int i =0 ;i <10; i++) {
-            ProducerRecord<String, String>  record = new ProducerRecord<String, String>("first_topic", "Hello Kafka" + Integer.toString(i));
+            String topic = "first_topic";
+            String value = "Kafka Value "+ Integer.toString(i);
+            String key = "key_"+ Integer.toString(i);
+            ProducerRecord<String, String>  record = new ProducerRecord<String, String>(topic, key, value);
 
+            logger.info("key" + key);
             //send Data -- asynchronously
             producer.send(record, new Callback() {
                 public void onCompletion(RecordMetadata recordMetadata, Exception e) {
@@ -37,7 +42,7 @@ public class ProducerDemoKeys {
                         logger.error("Error occurred while producing data");
                     }
                 }
-            });
+            }).get(); //block .send() to make it synchronous -- not recommended in production
         }
         producer.flush();
         producer.close();
